@@ -13,24 +13,27 @@ static TITLES_SOURCE_RIGHT: [&str; 5] = [
     "Conversations and insights about the moment. - The New York Times",
 ];
 
-static TITLES_SOURCE_SINGLE: [&str; 1] = ["FANGS - - - - 123 What - 3 ."];
+static TITLES_SOURCE_SINGLE: [&str; 1] = ["FANGS - - - - 123 What -3."];
+static TITLES_SOURCE_SINGLE_ALT: [&str; 1] = ["FANGS - Some days I subconsciously cross"];
 
-// There should be two strategies
-// 1) Many titles, split either side of the leftmost and rightmost dash.
-// Compare the text from either side of the split to see if they are the same
-// 2) Only a single title... use the
 fn main() {
     println!("Processing titles");
     strip_titles(&TITLES_SOURCE_LEFT);
     strip_titles(&TITLES_SOURCE_RIGHT);
     strip_titles(&TITLES_SOURCE_SINGLE);
+    strip_titles(&TITLES_SOURCE_SINGLE_ALT);
 }
 
+// There are two main strategies depending on number of input items
+// 1) Many titles, split either side of the leftmost and rightmost dash.
+// Compare the text from either side of the split to see if they are the same.
+// This has an advantage as it makes less assumptions. There does not need to be a separator.
+// 2) Single title, find common seperator characters and use one
 fn strip_titles(titles: &[&str]) {
     if titles.len() > 1 {
         strip_titles_multiple(titles);
     } else {
-        // strip_titles_single(titles);
+        strip_titles_single(titles);
     }
 }
 
@@ -98,7 +101,7 @@ fn titles_locate_matching_source(titles: &[&str]) -> TitleSource {
         //     i, current_char_left, current_char_right
         // );
 
-        'titles: for (t_i, title) in titles_title_chars.iter().enumerate() {
+        '_titles: for (t_i, title) in titles_title_chars.iter().enumerate() {
             let ri = title.len() - i - 1;
             // println!(
             //     "tc: {:1} t: {:2} l: {:3} r: {:4}",
@@ -175,12 +178,36 @@ fn titles_locate_matching_source(titles: &[&str]) -> TitleSource {
     }
 }
 
+fn strip_titles_single(titles: &[&str]) {
+    for title in titles {
+        let t_s_l = first_sep_pos(title);
+        let t_s_r = last_sep_pos(title);
+        let t_s_r_len = title.len() - t_s_r;
+
+        // here we assume the source is shorter than the title
+        let pure_title: &str = if t_s_l == 0 && t_s_r == 0 {
+            title
+        } else if t_s_l < t_s_r_len {
+            println!("right, sl");
+            &title[(t_s_l + 1)..]
+        } else {
+            println!("left, sr");
+            &title[..(t_s_r - 1)]
+        }
+        .trim();
+
+        println!("Stripped");
+        println!("{}", title);
+        println!("{}", pure_title);
+    }
+}
+
 static SOURCE_TITLE_SEP_CHARS: [char; 2] = ['|', '-'];
 
 fn first_sep_pos(title: &str) -> usize {
-    title.find(&SOURCE_TITLE_SEP_CHARS).unwrap_or(title.len())
+    title.find(&SOURCE_TITLE_SEP_CHARS).unwrap_or(0)
 }
 
 fn last_sep_pos(title: &str) -> usize {
-    title.rfind(&SOURCE_TITLE_SEP_CHARS).unwrap_or(title.len())
+    title.rfind(&SOURCE_TITLE_SEP_CHARS).unwrap_or(0)
 }
