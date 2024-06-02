@@ -1,6 +1,6 @@
 use crate::entities::Title;
 
-pub fn strip_titles_single<'a>(titles: &'a Vec<Title<'a>>) -> Vec<Title<'a>> {
+pub fn strip_titles_single<'a>(titles: Vec<Title<'a>>) -> Vec<Title<'a>> {
     let new_titles = titles.into_iter().map(|t| -> Title<'a> {
         let title = t.title;
         let t_s_l = first_sep_pos(title);

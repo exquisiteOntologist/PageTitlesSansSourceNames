@@ -53,7 +53,7 @@ fn map_title_array<'a>(titles: &'a Vec<(i32, &'a str)>) -> Vec<Title<'a>> {
 fn test_strip_source_left() {
     let t_e = titles_enumerated(&TITLES_SOURCE_LEFT);
     let t = map_title_array(&t_e);
-    let p_t = strip_titles(&t);
+    let p_t = strip_titles(t);
     assert_eq!(p_t.len(), 4);
     assert_eq!(p_t.is_empty(), false);
     assert_eq!(p_t[1].id, &1);
@@ -65,7 +65,7 @@ fn test_strip_source_left() {
 fn test_strip_source_right() {
     let t_e = titles_enumerated(&TITLES_SOURCE_RIGHT);
     let t = map_title_array(&t_e);
-    let p_t = strip_titles(&t);
+    let p_t = strip_titles(t);
     assert_eq!(p_t.len(), 5);
     assert_eq!(p_t.is_empty(), false);
     assert_eq!(p_t[1].id, &1);
@@ -87,7 +87,7 @@ fn test_strip_source_right() {
 fn test_strip_source_none() {
     let t_e = titles_enumerated(&TITLES_SOURCE_NONE);
     let t = map_title_array(&t_e);
-    let p_t = strip_titles(&t);
+    let p_t = strip_titles(t);
     assert_eq!(p_t.len(), 5);
     assert_eq!(p_t.is_empty(), false);
     assert_eq!(p_t[1].id, &1);
@@ -109,7 +109,7 @@ fn test_strip_source_none() {
 fn test_strip_source_single() {
     let t_e = titles_enumerated(&TITLES_SOURCE_SINGLE);
     let t = map_title_array(&t_e);
-    let p_t = strip_titles(&t);
+    let p_t = strip_titles(t);
     assert_eq!(p_t.len(), 1);
     assert_eq!(p_t.is_empty(), false);
     assert_eq!(p_t[0].id, &0);
@@ -120,7 +120,7 @@ fn test_strip_source_single() {
 fn test_strip_source_single_alt() {
     let t_e = titles_enumerated(&TITLES_SOURCE_SINGLE_ALT);
     let t = map_title_array(&t_e);
-    let p_t = strip_titles(&t);
+    let p_t = strip_titles(t);
     assert_eq!(p_t.len(), 1);
     assert_eq!(p_t.is_empty(), false);
     assert_eq!(p_t[0].id, &0);
@@ -131,7 +131,7 @@ fn test_strip_source_single_alt() {
 fn test_strip_source_dual() {
     let t_e = titles_enumerated(&TITLES_SOURCE_DUAL);
     let t = map_title_array(&t_e);
-    let p_t = strip_titles(&t);
+    let p_t = strip_titles(t);
     assert_eq!(p_t.len(), 2);
     assert_eq!(p_t.is_empty(), false);
     assert_eq!(p_t[0].id, &0);
@@ -141,7 +141,7 @@ fn test_strip_source_dual() {
         "“Practice Tantric Exodus”: Tuning into Burning Man"
     );
     assert_eq!(
-        p_t[0].title,
+        p_t[1].title,
         "At the Webster Apartments: One of Manhattan's Last All-Women's Boarding Houses"
     );
 }

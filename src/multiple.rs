@@ -12,7 +12,17 @@ struct TitleSource {
     position: TitleSourcePos,
 }
 
-pub fn strip_titles_multiple<'a>(titles: &'a Vec<Title<'a>>) -> Vec<Title<'a>> {
+/// Remove the source text from the given titles.
+/// This caters to when the source is included multiple times.
+/// If there is no 2nd source, the 2nd pass will end quickly.
+pub fn strip_titles_multiple_double_pass<'a>(titles: Vec<Title<'a>>) -> Vec<Title<'a>> {
+    let pass_one = strip_titles_multiple(titles);
+    let pass_two = strip_titles_multiple(pass_one);
+    pass_two
+}
+
+/// Pass over all the titles, finding identical source text, and removing the source text.
+pub fn strip_titles_multiple<'a>(titles: Vec<Title<'a>>) -> Vec<Title<'a>> {
     let t_s = titles_locate_matching_source(&titles);
 
     let new_titles = titles.into_iter().map(|t| -> Title<'a> {
