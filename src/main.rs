@@ -1,5 +1,3 @@
-static SOURCE_TITLE_SEP_CHARS: [char; 2] = ['|', '-'];
-
 static TITLES_SOURCE_RIGHT: [&str; 4] = [
     "This is a title - FANGS",
     "This is another title - a title with a dash - FANGS",
@@ -10,25 +8,13 @@ static TITLES_SOURCE_RIGHT: [&str; 4] = [
 // There should be two strategies
 // 1) Many titles, split either side of the leftmost and rightmost dash.
 // Compare the text from either side of the split to see if they are the same
+// 2) Only a single title... use the
 fn main() {
     println!("Processing titles");
     strip_titles(&TITLES_SOURCE_RIGHT);
 }
 
 fn strip_titles(titles: &[&str]) {
-    // let mut left_sep: &str = "";
-    // let mut right_sep: &str = "";
-    // let mut prior_title: &str = "";
-
-    // for title in titles {
-    //     println!("Title:");
-    //     println!("{}", title);
-
-    //     title.split(SOURCE_TITLE_SEP_CHARS);
-
-    //     prior_title = title;
-    // }
-    //
     if titles.len() > 1 {
         strip_titles_multiple(titles);
     } else {
@@ -36,7 +22,35 @@ fn strip_titles(titles: &[&str]) {
     }
 }
 
+enum TitleSourcePos {
+    Null,
+    End,
+    Start,
+}
+
+struct TitleSource {
+    name: String,
+    length: usize,
+    position: TitleSourcePos,
+}
+
 fn strip_titles_multiple(titles: &[&str]) {
+    let t_s = titles_locate_matching_source(&titles);
+
+    for title in titles {
+        // TODO: Refactor to use character positions instead of .len() ?
+        let pure_title: &str = match t_s.position {
+            TitleSourcePos::Null => &title,
+            TitleSourcePos::End => &title[..(title.len() - t_s.length + 1)],
+            TitleSourcePos::Start => &title[t_s.length..],
+        };
+        println!("Stripped");
+        println!("{}", title);
+        println!("{}", pure_title);
+    }
+}
+
+fn titles_locate_matching_source(titles: &[&str]) -> TitleSource {
     let t_a = titles[0];
     let t_b = titles[1];
 
@@ -51,85 +65,40 @@ fn strip_titles_multiple(titles: &[&str]) {
 
     let mut matching_starts: Vec<char> = Vec::new();
     let mut matching_ends: Vec<char> = Vec::new();
-    for i in 1..(max + 1) {
-        if t_a_c[t_a_c.len() - i] == t_b_c[t_b_c.len() - i] {
+    let mut current_char: char = '_';
+    for i in 0..(max + 0) {
+        if t_a_c[t_a_c.len() - i - 1] == t_b_c[t_b_c.len() - i - 1] {
             // note this puts the characters in reverse order
-            matching_ends.push(t_a_c[t_a_c.len() - i]);
+            matching_ends.push(t_a_c[t_a_c.len() - i - 1]);
         }
-        // if t_a_c[X - i] == t_b_c[X - i] {
-        //     matching_starts.push(t_a_c[X - i]);
-        // }
+        if t_a_c[i] == t_b_c[i] {
+            matching_starts.push(t_a_c[i]);
+        }
     }
 
-    let use_end = matching_starts.len() <= matching_ends.len();
-
-    if matching_ends.len() != 0 {
-        // let mut has_sep: &bool = false;
-    }
+    let prefer_end = matching_starts.len() <= matching_ends.len();
+    let name_position: TitleSourcePos = if prefer_end && matching_ends.len() > 2 {
+        TitleSourcePos::End
+    } else if matching_starts.len() > 2 {
+        TitleSourcePos::Start
+    } else {
+        TitleSourcePos::Null
+    };
 
     let source_name_len: usize = matching_ends.len();
     let source_name: String = matching_ends.iter().rev().collect();
-    println!("Source name: {}", source_name);
+    println!("Source name: {:?}", source_name);
+    let start_name: String = matching_starts.iter().collect();
+    println!("Source name if start: {:?}", start_name);
 
-    for title in titles {
-        // TODO: Refactor to use character positions
-        let pure_title: &str = &title[0..(title.len() - source_name_len + 1)];
-        println!("Stripped");
-        println!("{}", title);
-        println!("{}", pure_title);
+    TitleSource {
+        name: source_name,
+        length: source_name_len,
+        position: name_position,
     }
 }
 
-// fn strip_titles_multiple(titles: &[&str]) {
-//     let title_a = titles[0];
-//     let title_b = titles[1];
-
-//     let title_a_split: Vec<&str> = title_a.split(SOURCE_TITLE_SEP_CHARS).collect();
-//     let title_b_split: Vec<&str> = title_b.split(SOURCE_TITLE_SEP_CHARS).collect();
-
-//     let end_match = title_a_split.last() == title_b_split.last();
-
-//     if end_match {
-//         let max: usize = if title_a_split.len() > title_b_split.len() {
-//             title_b_split.len()
-//         } else {
-//             title_a_split.len()
-//         };
-//         // most of the time source names don't themselves have dashes, but this caters to those too.
-//         let mut source_name: Vec<&str> = Vec::new();
-//         for i in 0..max {
-//             if title_a_split[title_a_split.len() - i] != title_b_split[title_b_split.len() - i] {
-//                 // both titles have different lengths, so counting this way
-//                 break;
-//             }
-//             source_name.push(title_a_split[title_a_split.len() - i]);
-//         }
-//     }
-
-//     let start_match = title_a_split.first() == title_b_split.first();
-
-//     if start_match {
-//         let max: usize = if title_a_split.len() > title_b_split.len() {
-//             title_b_split.len()
-//         } else {
-//             title_a_split.len()
-//         };
-//         let mut source_name: Vec<&str> = Vec::new();
-//         for i in 0..max {
-//             if title_a_split[i] != title_b_split[i] {
-//                 // both titles have different lengths, so counting this way
-//                 break;
-//             }
-//             source_name.push(title_a_split[i]);
-//         }
-//     }
-// }
-
-// fn strip_titles_single<'a>(titles: &'a [&'a str]) -> &'a [&'a str] {
-//     titles
-//         .into_iter()
-//         .map(|t| t.replace_range(last_sep_pos(t).., ""))
-// }
+static SOURCE_TITLE_SEP_CHARS: [char; 2] = ['|', '-'];
 
 fn first_sep_pos(title: &str) -> usize {
     title.find(&SOURCE_TITLE_SEP_CHARS).unwrap_or(title.len())
