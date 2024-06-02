@@ -1,3 +1,5 @@
+use crate::entities::Title;
+
 enum TitleSourcePos {
     Null,
     End,
@@ -10,10 +12,11 @@ struct TitleSource {
     position: TitleSourcePos,
 }
 
-pub fn strip_titles_multiple(titles: &[&str]) {
+pub fn strip_titles_multiple<'a>(titles: &'a Vec<Title<'a>>) -> Vec<Title<'a>> {
     let t_s = titles_locate_matching_source(&titles);
 
-    for title in titles {
+    let new_titles = titles.into_iter().map(|t| -> Title<'a> {
+        let title = t.title;
         // TODO: Refactor to use character positions instead of .len() ?
         let pure_title: &str = match t_s.position {
             TitleSourcePos::Null => &title,
@@ -23,18 +26,25 @@ pub fn strip_titles_multiple(titles: &[&str]) {
         println!("Stripped");
         println!("{}", title);
         println!("{}", pure_title);
-    }
 
-    println!("--- === ---");
+        Title {
+            id: t.id,
+            title: pure_title,
+        }
+    });
+
+    let coll = new_titles.collect::<Vec<Title<'a>>>();
+
+    coll
 }
 
 /// Locate the identical source name that is in all of the page titles.
 /// Note that this requires the titles to come from the same source,
 /// and for all of the titles to consistently include the source name.
-fn titles_locate_matching_source(titles: &[&str]) -> TitleSource {
+fn titles_locate_matching_source<'a>(titles: &'a Vec<Title<'a>>) -> TitleSource {
     let mut max: usize = 0;
-    for title in titles {
-        let count = title.chars().count();
+    for t in titles {
+        let count = t.title.chars().count();
         if count > max {
             max = count;
         }
@@ -47,7 +57,7 @@ fn titles_locate_matching_source(titles: &[&str]) -> TitleSource {
 
     let titles_title_chars: Vec<Vec<char>> = titles
         .into_iter()
-        .map(|t| t.chars().collect::<Vec<char>>())
+        .map(|t| t.title.chars().collect::<Vec<char>>())
         .collect();
     'chars: for i in 0..max {
         let mut current_char_left: &char = titles_title_chars.get(0).unwrap().get(i).unwrap();

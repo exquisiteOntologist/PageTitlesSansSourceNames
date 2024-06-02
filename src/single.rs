@@ -1,5 +1,8 @@
-pub fn strip_titles_single(titles: &[&str]) {
-    for title in titles {
+use crate::entities::Title;
+
+pub fn strip_titles_single<'a>(titles: &'a Vec<Title<'a>>) -> Vec<Title<'a>> {
+    let new_titles = titles.into_iter().map(|t| -> Title<'a> {
+        let title = t.title;
         let t_s_l = first_sep_pos(title);
         let t_s_r = last_sep_pos(title);
         let t_s_r_len = title.len() - t_s_r;
@@ -19,7 +22,16 @@ pub fn strip_titles_single(titles: &[&str]) {
         println!("Stripped");
         println!("{}", title);
         println!("{}", pure_title);
-    }
+
+        Title {
+            id: t.id,
+            title: pure_title,
+        }
+    });
+
+    let coll = new_titles.collect::<Vec<Title<'a>>>();
+
+    coll
 }
 
 static SOURCE_TITLE_SEP_CHARS: [char; 2] = ['|', '-'];

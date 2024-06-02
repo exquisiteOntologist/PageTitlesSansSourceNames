@@ -1,4 +1,4 @@
-use titles::strip::strip_titles;
+use crate::{entities::Title, strip::strip_titles};
 
 static TITLES_SOURCE_LEFT: [&str; 4] = [
     "FANGS - This is a title",
@@ -25,32 +25,35 @@ static TITLES_SOURCE_DUAL: [&str; 2] = [
     "The Paris Review  -  At the Webster Apartments: One of Manhattan's Last All-Women's Boarding Houses - The Paris Review",
 ];
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+fn map_title_array<'a>(titles: &'a [&str]) -> Vec<Title<'a>> {
+    let titles: Vec<Title> = titles
+        .into_iter()
+        .map(|t| Title { id: &0, title: t })
+        .collect();
+    titles
+}
 
-    #[test]
-    fn test_strip_source_left() {
-        strip_titles(&TITLES_SOURCE_LEFT);
-    }
+#[test]
+fn test_strip_source_left() {
+    strip_titles(&map_title_array(&TITLES_SOURCE_LEFT));
+}
 
-    #[test]
-    fn test_strip_source_right() {
-        strip_titles(&TITLES_SOURCE_RIGHT);
-    }
+#[test]
+fn test_strip_source_right() {
+    strip_titles(&map_title_array(&TITLES_SOURCE_RIGHT));
+}
 
-    #[test]
-    fn test_strip_source_single() {
-        strip_titles(&TITLES_SOURCE_SINGLE);
-    }
+#[test]
+fn test_strip_source_single() {
+    strip_titles(&map_title_array(&TITLES_SOURCE_SINGLE));
+}
 
-    #[test]
-    fn test_strip_source_single_alt() {
-        strip_titles(&TITLES_SOURCE_SINGLE_ALT);
-    }
+#[test]
+fn test_strip_source_single_alt() {
+    strip_titles(&map_title_array(&TITLES_SOURCE_SINGLE_ALT));
+}
 
-    #[test]
-    fn test_strip_source_dual() {
-        strip_titles(&TITLES_SOURCE_DUAL);
-    }
+#[test]
+fn test_strip_source_dual() {
+    strip_titles(&map_title_array(&TITLES_SOURCE_DUAL));
 }
