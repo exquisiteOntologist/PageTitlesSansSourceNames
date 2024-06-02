@@ -22,7 +22,8 @@ pub fn strip_titles_multiple<'a>(titles: &'a Vec<Title<'a>>) -> Vec<Title<'a>> {
             TitleSourcePos::Null => &title,
             TitleSourcePos::End => &title[..(title.len() - t_s.length + 1)],
             TitleSourcePos::Start => &title[t_s.length..],
-        };
+        }
+        .trim();
         println!("Stripped");
         println!("{}", title);
         println!("{}", pure_title);

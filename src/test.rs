@@ -39,6 +39,7 @@ fn test_strip_source_left() {
     let p_t = strip_titles(&t);
     assert_eq!(p_t.len(), 4);
     assert_eq!(p_t.is_empty(), false);
+    assert_eq!(p_t[0].title, "This is a title");
 }
 
 #[test]
@@ -47,6 +48,18 @@ fn test_strip_source_right() {
     let p_t = strip_titles(&t);
     assert_eq!(p_t.len(), 5);
     assert_eq!(p_t.is_empty(), false);
+    assert_eq!(
+        p_t[0].title,
+        "What We Know About the Latest Gaza Cease-Fire Proposal"
+    );
+    assert_eq!(
+        p_t[1].title,
+        "Doctor-Assisted Death Is Legal in 10 States. Could New York Be No. 11?"
+    );
+    assert_eq!(
+        p_t[2].title,
+        "Boeing Starliner Launch: Video and Live Updates"
+    );
 }
 
 #[test]
@@ -55,6 +68,7 @@ fn test_strip_source_single() {
     let p_t = strip_titles(&t);
     assert_eq!(p_t.len(), 1);
     assert_eq!(p_t.is_empty(), false);
+    assert_eq!(p_t[0].title, "- - - 123 What -3.");
 }
 
 #[test]
@@ -63,6 +77,7 @@ fn test_strip_source_single_alt() {
     let p_t = strip_titles(&t);
     assert_eq!(p_t.len(), 1);
     assert_eq!(p_t.is_empty(), false);
+    assert_eq!(p_t[0].title, "Some days I subconsciously cross");
 }
 
 #[test]
@@ -71,4 +86,12 @@ fn test_strip_source_dual() {
     let p_t = strip_titles(&t);
     assert_eq!(p_t.len(), 2);
     assert_eq!(p_t.is_empty(), false);
+    assert_eq!(
+        p_t[0].title,
+        "“Practice Tantric Exodus”: Tuning into Burning Man"
+    );
+    assert_eq!(
+        p_t[0].title,
+        "At the Webster Apartments: One of Manhattan's Last All-Women's Boarding Houses"
+    );
 }
