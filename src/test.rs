@@ -35,25 +35,40 @@ fn map_title_array<'a>(titles: &'a [&str]) -> Vec<Title<'a>> {
 
 #[test]
 fn test_strip_source_left() {
-    strip_titles(&map_title_array(&TITLES_SOURCE_LEFT));
+    let t = map_title_array(&TITLES_SOURCE_LEFT);
+    let p_t = strip_titles(&t);
+    assert_eq!(p_t.len(), 4);
+    assert_eq!(p_t.is_empty(), false);
 }
 
 #[test]
 fn test_strip_source_right() {
-    strip_titles(&map_title_array(&TITLES_SOURCE_RIGHT));
+    let t = map_title_array(&TITLES_SOURCE_RIGHT);
+    let p_t = strip_titles(&t);
+    assert_eq!(p_t.len(), 5);
+    assert_eq!(p_t.is_empty(), false);
 }
 
 #[test]
 fn test_strip_source_single() {
-    strip_titles(&map_title_array(&TITLES_SOURCE_SINGLE));
+    let t = map_title_array(&TITLES_SOURCE_SINGLE);
+    let p_t = strip_titles(&t);
+    assert_eq!(p_t.len(), 1);
+    assert_eq!(p_t.is_empty(), false);
 }
 
 #[test]
 fn test_strip_source_single_alt() {
-    strip_titles(&map_title_array(&TITLES_SOURCE_SINGLE_ALT));
+    let t = map_title_array(&TITLES_SOURCE_SINGLE_ALT);
+    let p_t = strip_titles(&t);
+    assert_eq!(p_t.len(), 1);
+    assert_eq!(p_t.is_empty(), false);
 }
 
 #[test]
 fn test_strip_source_dual() {
-    strip_titles(&map_title_array(&TITLES_SOURCE_DUAL));
+    let t = map_title_array(&TITLES_SOURCE_DUAL);
+    let p_t = strip_titles(&t);
+    assert_eq!(p_t.len(), 2);
+    assert_eq!(p_t.is_empty(), false);
 }
