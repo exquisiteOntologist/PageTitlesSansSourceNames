@@ -29,9 +29,7 @@ pub fn strip_titles_single<'a>(titles: &'a Vec<Title<'a>>) -> Vec<Title<'a>> {
         }
     });
 
-    let coll = new_titles.collect::<Vec<Title<'a>>>();
-
-    coll
+    new_titles.collect::<Vec<Title<'a>>>()
 }
 
 static SOURCE_TITLE_SEP_CHARS: [char; 2] = ['|', '-'];

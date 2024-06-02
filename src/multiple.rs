@@ -34,9 +34,7 @@ pub fn strip_titles_multiple<'a>(titles: &'a Vec<Title<'a>>) -> Vec<Title<'a>> {
         }
     });
 
-    let coll = new_titles.collect::<Vec<Title<'a>>>();
-
-    coll
+    new_titles.collect::<Vec<Title<'a>>>()
 }
 
 /// Locate the identical source name that is in all of the page titles.
