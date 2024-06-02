@@ -1,9 +1,19 @@
-static TITLES_SOURCE_RIGHT: [&str; 4] = [
-    "This is a title - FANGS",
-    "This is another title - a title with a dash - FANGS",
-    "Hello - FANGS",
-    "123 What 3 . - - - FANGS",
+static TITLES_SOURCE_LEFT: [&str; 4] = [
+    "FANGS - This is a title",
+    "FANGS - This is another title - a title with a dash",
+    "FANGS - Hello",
+    "FANGS - - - - 123 What - 3 .",
 ];
+
+static TITLES_SOURCE_RIGHT: [&str; 5] = [
+    "What We Know About the Latest Gaza Cease-Fire Proposal - The New York Times",
+    "Doctor-Assisted Death Is Legal in 10 States. Could New York Be No. 11? - The New York Times",
+    "Boeing Starliner Launch: Video and Live Updates - The New York Times",
+    "Conversations and insights about the moment. - The New York Times",
+    "Conversations and insights about the moment. - The New York Times",
+];
+
+static TITLES_SOURCE_SINGLE: [&str; 1] = ["FANGS - - - - 123 What - 3 ."];
 
 // There should be two strategies
 // 1) Many titles, split either side of the leftmost and rightmost dash.
@@ -11,7 +21,9 @@ static TITLES_SOURCE_RIGHT: [&str; 4] = [
 // 2) Only a single title... use the
 fn main() {
     println!("Processing titles");
+    strip_titles(&TITLES_SOURCE_LEFT);
     strip_titles(&TITLES_SOURCE_RIGHT);
+    strip_titles(&TITLES_SOURCE_SINGLE);
 }
 
 fn strip_titles(titles: &[&str]) {
@@ -48,9 +60,11 @@ fn strip_titles_multiple(titles: &[&str]) {
         println!("{}", title);
         println!("{}", pure_title);
     }
+
+    println!("--- === ---");
 }
 
-/// Locate the identical source name in each of the titles.
+/// Locate the identical source name that is in all of the page titles.
 /// Note that this requires the titles to come from the same source,
 /// and for all of the titles to consistently include the source name.
 fn titles_locate_matching_source(titles: &[&str]) -> TitleSource {
@@ -62,7 +76,7 @@ fn titles_locate_matching_source(titles: &[&str]) -> TitleSource {
         }
     }
 
-    println!("Max chars (lowest title length) {}", max);
+    // println!("Max chars (lowest title length) {}", max);
 
     let mut matching_starts: Vec<&char> = Vec::new();
     let mut matching_ends: Vec<&char> = Vec::new();
@@ -76,23 +90,23 @@ fn titles_locate_matching_source(titles: &[&str]) -> TitleSource {
         let mut current_char_right: &char = titles_title_chars
             .get(0)
             .unwrap()
-            .get(titles_title_chars[0].len() - i - 1)
+            .get(titles_title_chars.get(0).unwrap().len() - i - 1)
             .unwrap();
 
-        println!(
-            "c: {:1} ccl: {:2} ccr: {:3}",
-            i, current_char_left, current_char_right
-        );
+        // println!(
+        //     "c: {:1} ccl: {:2} ccr: {:3}",
+        //     i, current_char_left, current_char_right
+        // );
 
         'titles: for (t_i, title) in titles_title_chars.iter().enumerate() {
             let ri = title.len() - i - 1;
-            println!(
-                "tc: {:1} t: {:2} l: {:3} r: {:4}",
-                i,
-                title.clone().iter().collect::<String>(),
-                title[i],
-                title[ri]
-            );
+            // println!(
+            //     "tc: {:1} t: {:2} l: {:3} r: {:4}",
+            //     i,
+            //     title.clone().iter().collect::<String>(),
+            //     title[i],
+            //     title[ri]
+            // );
             let right_match = &title[ri] == current_char_right;
             let left_match = &title[i] == current_char_left;
 
@@ -102,7 +116,7 @@ fn titles_locate_matching_source(titles: &[&str]) -> TitleSource {
             }
 
             if t_i == (titles.len() - 1) {
-                println!("last title");
+                // println!("last title");
                 if right_match {
                     // right matched last char
                     // note this puts the characters in reverse order because rev iter (end - i)
@@ -119,15 +133,15 @@ fn titles_locate_matching_source(titles: &[&str]) -> TitleSource {
             current_char_left = &title[i];
         }
 
-        println!(
-            "Text start {:?}",
-            matching_starts.clone().into_iter().collect::<String>()
-        );
+        // println!(
+        //     "Text start {:?}",
+        //     matching_starts.clone().into_iter().collect::<String>()
+        // );
 
-        println!(
-            "Text end {:?}",
-            matching_ends.clone().into_iter().collect::<String>()
-        );
+        // println!(
+        //     "Text end {:?}",
+        //     matching_ends.clone().into_iter().collect::<String>()
+        // );
     }
 
     let prefer_end = matching_starts.len() <= matching_ends.len();
@@ -139,11 +153,20 @@ fn titles_locate_matching_source(titles: &[&str]) -> TitleSource {
         TitleSourcePos::Null
     };
 
-    let source_name_len: usize = matching_ends.len();
-    let source_name: String = matching_ends.into_iter().rev().collect();
-    println!("Source name: {:?}", source_name);
-    let start_name: String = matching_starts.into_iter().collect();
-    println!("Source name if start: {:?}", start_name);
+    let source_name_len: usize = match name_position {
+        TitleSourcePos::End => matching_ends.len(),
+        TitleSourcePos::Start => matching_starts.len(),
+        TitleSourcePos::Null => 0,
+    };
+    let source_name: String = match name_position {
+        TitleSourcePos::End => matching_ends.into_iter().rev().collect(),
+        TitleSourcePos::Start => matching_starts.into_iter().collect(),
+        TitleSourcePos::Null => String::new(),
+    };
+
+    // println!("Source name: {:?}", source_name);
+    // let start_name: String = matching_starts.into_iter().collect();
+    // println!("Source name if start: {:?}", start_name);
 
     TitleSource {
         name: source_name,
