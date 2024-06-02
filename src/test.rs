@@ -28,9 +28,10 @@ static TITLES_SOURCE_SINGLE: [&str; 1] = ["FANGS - - - - 123 What -3."];
 static TITLES_SOURCE_SINGLE_ALT: [&str; 1] = ["FANGS - Some days I subconsciously cross"];
 
 // In this instance it is easier to just keep the repeated source
-static TITLES_SOURCE_DUAL: [&str; 2] = [
+static TITLES_SOURCE_DUAL: [&str; 3] = [
     "The Paris Review  -  “Practice Tantric Exodus”: Tuning into Burning Man - The Paris Review",
     "The Paris Review  -  At the Webster Apartments: One of Manhattan's Last All-Women's Boarding Houses - The Paris Review",
+    "The Paris Review  -  Dorm Room Art?: At the Biennale - The Paris Review"
 ];
 
 fn titles_enumerated<'a>(titles: &'a [&str]) -> Vec<(i32, &'a str)> {
@@ -132,7 +133,7 @@ fn test_strip_source_dual() {
     let t_e = titles_enumerated(&TITLES_SOURCE_DUAL);
     let t = map_title_array(&t_e);
     let p_t = strip_titles(t);
-    assert_eq!(p_t.len(), 2);
+    assert_eq!(p_t.len(), 3);
     assert_eq!(p_t.is_empty(), false);
     assert_eq!(p_t[0].id, &0);
     assert_eq!(p_t[1].id, &1);
@@ -144,4 +145,5 @@ fn test_strip_source_dual() {
         p_t[1].title,
         "At the Webster Apartments: One of Manhattan's Last All-Women's Boarding Houses"
     );
+    assert_eq!(p_t[2].title, "Dorm Room Art?: At the Biennale");
 }
