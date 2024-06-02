@@ -14,7 +14,14 @@ static TITLES_SOURCE_RIGHT: [&str; 5] = [
 ];
 
 static TITLES_SOURCE_SINGLE: [&str; 1] = ["FANGS - - - - 123 What -3."];
+
 static TITLES_SOURCE_SINGLE_ALT: [&str; 1] = ["FANGS - Some days I subconsciously cross"];
+
+// In this instance it is easier to just keep the repeated source
+static TITLES_SOURCE_DUAL: [&str; 2] = [
+    "The Paris Review  -  “Practice Tantric Exodus”: Tuning into Burning Man - The Paris Review",
+    "The Paris Review  -  At the Webster Apartments: One of Manhattan's Last All-Women's Boarding Houses - The Paris Review",
+];
 
 fn main() {
     println!("Processing titles");
@@ -22,6 +29,7 @@ fn main() {
     strip_titles(&TITLES_SOURCE_RIGHT);
     strip_titles(&TITLES_SOURCE_SINGLE);
     strip_titles(&TITLES_SOURCE_SINGLE_ALT);
+    strip_titles(&TITLES_SOURCE_DUAL);
 }
 
 // There are two main strategies depending on number of input items
