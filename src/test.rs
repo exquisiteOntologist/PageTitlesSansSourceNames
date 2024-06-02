@@ -15,6 +15,14 @@ static TITLES_SOURCE_RIGHT: [&str; 5] = [
     "Conversations and insights about the moment. - The New York Times",
 ];
 
+static TITLES_SOURCE_NONE: [&str; 5] = [
+    "What We Know About the Latest Gaza Cease-Fire Proposal",
+    "Doctor-Assisted Death Is Legal in 10 States. Could New York Be No. 11?",
+    "Boeing Starliner Launch: Video and Live Updates",
+    "Conversations and insights about the moment.",
+    "Conversations and insights about the moment.",
+];
+
 static TITLES_SOURCE_SINGLE: [&str; 1] = ["FANGS - - - - 123 What -3."];
 
 static TITLES_SOURCE_SINGLE_ALT: [&str; 1] = ["FANGS - Some days I subconsciously cross"];
@@ -56,6 +64,28 @@ fn test_strip_source_left() {
 #[test]
 fn test_strip_source_right() {
     let t_e = titles_enumerated(&TITLES_SOURCE_RIGHT);
+    let t = map_title_array(&t_e);
+    let p_t = strip_titles(&t);
+    assert_eq!(p_t.len(), 5);
+    assert_eq!(p_t.is_empty(), false);
+    assert_eq!(p_t[1].id, &1);
+    assert_eq!(
+        p_t[0].title,
+        "What We Know About the Latest Gaza Cease-Fire Proposal"
+    );
+    assert_eq!(
+        p_t[1].title,
+        "Doctor-Assisted Death Is Legal in 10 States. Could New York Be No. 11?"
+    );
+    assert_eq!(
+        p_t[2].title,
+        "Boeing Starliner Launch: Video and Live Updates"
+    );
+}
+
+#[test]
+fn test_strip_source_none() {
+    let t_e = titles_enumerated(&TITLES_SOURCE_NONE);
     let t = map_title_array(&t_e);
     let p_t = strip_titles(&t);
     assert_eq!(p_t.len(), 5);
