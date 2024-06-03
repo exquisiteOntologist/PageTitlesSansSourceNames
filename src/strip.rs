@@ -8,7 +8,7 @@ use crate::{
 // This has an advantage as it makes less assumptions. There does not need to be a separator.
 // 2) Single title, find common seperator characters and use one
 pub fn strip_titles<'a>(titles: Vec<Title<'a>>) -> Vec<Title<'a>> {
-    println!("-- === ---");
+    // println!("-- === ---");
 
     if titles.len() > 1 {
         strip_titles_multiple_double_pass(titles)
