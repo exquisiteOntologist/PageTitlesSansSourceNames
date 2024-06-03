@@ -11,17 +11,17 @@ pub fn strip_titles_single<'a>(titles: Vec<Title<'a>>) -> Vec<Title<'a>> {
         let pure_title: &str = if t_s_l == 0 && t_s_r == 0 {
             title
         } else if t_s_l < t_s_r_len {
-            println!("right, sl");
+            // println!("right, sl");
             &title[(t_s_l + 1)..]
         } else {
-            println!("left, sr");
+            // println!("left, sr");
             &title[..(t_s_r - 1)]
         }
         .trim();
 
-        println!("Stripped");
-        println!("{}", title);
-        println!("{}", pure_title);
+        // println!("Stripped");
+        // println!("{}", title);
+        // println!("{}", pure_title);
 
         Title {
             id: t.id,

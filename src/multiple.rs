@@ -34,9 +34,10 @@ pub fn strip_titles_multiple<'a>(titles: Vec<Title<'a>>) -> Vec<Title<'a>> {
             TitleSourcePos::Start => &title[t_s.length..],
         }
         .trim();
-        println!("Stripped");
-        println!("{}", title);
-        println!("{}", pure_title);
+
+        // println!("Stripped");
+        // println!("{}", title);
+        // println!("{}", pure_title);
 
         Title {
             id: t.id,
