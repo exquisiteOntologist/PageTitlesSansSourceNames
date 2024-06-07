@@ -34,6 +34,15 @@ static TITLES_SOURCE_DUAL: [&str; 3] = [
     "The Paris Review  -  Dorm Room Art?: At the Biennale - The Paris Review"
 ];
 
+static TITLES_SOME_EMPTY: [&str; 6] = [
+    "",
+    "The Paris Review  -  At the Webster Apartments: One of Manhattan's Last All-Women's Boarding Houses - The Paris Review",
+    "The Paris Review  -  At the Webster Apartments: One of Manhattan's Last All-Women's Boarding Houses - The Paris Review",
+    "",
+    "The Paris Review  -  At the Webster Apartments: One of Manhattan's Last All-Women's Boarding Houses - The Paris Review",
+    ""
+];
+
 fn titles_enumerated<'a>(titles: &'a [&str]) -> Vec<(i32, &'a str)> {
     titles
         .into_iter()
@@ -146,4 +155,20 @@ fn test_strip_source_dual() {
         "At the Webster Apartments: One of Manhattan's Last All-Women's Boarding Houses"
     );
     assert_eq!(p_t[2].title, "Dorm Room Art?: At the Biennale");
+}
+
+#[test]
+fn test_strip_some_empty() {
+    let t_e = titles_enumerated(&TITLES_SOME_EMPTY);
+    let t = map_title_array(&t_e);
+    let p_t = strip_titles(t);
+    assert_eq!(p_t.len(), 6);
+    assert_eq!(p_t.is_empty(), false);
+    assert_eq!(p_t[0].id, &0);
+    assert_eq!(p_t[1].id, &1);
+    assert_eq!(p_t[0].title, "");
+    assert_eq!(
+        p_t[1].title,
+        "At the Webster Apartments: One of Manhattan's Last All-Women's Boarding Houses"
+    );
 }

@@ -70,12 +70,19 @@ fn titles_locate_matching_source<'a>(titles: &'a Vec<Title<'a>>) -> TitleSource 
         .map(|t| t.title.chars().collect::<Vec<char>>())
         .collect();
     'chars: for i in 0..max {
-        let mut current_char_left: &char = titles_title_chars.get(0).unwrap().get(i).unwrap();
-        let mut current_char_right: &char = titles_title_chars
-            .get(0)
-            .unwrap()
-            .get(titles_title_chars.get(0).unwrap().len() - i - 1)
-            .unwrap();
+        let first_title: &Vec<char> = match titles_title_chars.get(0) {
+            Some(v) => v,
+            None => {
+                eprintln!("Error getting first title");
+                &Vec::new()
+            }
+        };
+        if first_title.is_empty() {
+            eprintln!("The first titles in the set is empty");
+            break 'chars;
+        }
+        let mut current_char_left: &char = first_title.get(i).unwrap();
+        let mut current_char_right: &char = first_title.get(first_title.len() - i - 1).unwrap();
 
         // println!(
         //     "c: {:1} ccl: {:2} ccr: {:3}",
