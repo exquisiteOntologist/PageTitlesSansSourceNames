@@ -96,6 +96,9 @@ fn titles_locate_matching_source<'a>(titles: &'a Vec<Title<'a>>) -> TitleSource 
         // );
 
         '_titles: for (t_i, title) in titles_title_chars.iter().enumerate() {
+            if title.len() < 1 || ((i + 1) > title.len()) {
+                continue;
+            }
             let ri = title.len() - i - 1;
             // println!(
             //     "tc: {:1} t: {:2} l: {:3} r: {:4}",
