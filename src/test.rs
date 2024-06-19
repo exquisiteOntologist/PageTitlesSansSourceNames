@@ -167,6 +167,7 @@ fn test_strip_some_empty() {
     assert_eq!(p_t[0].id, &0);
     assert_eq!(p_t[1].id, &1);
     assert_eq!(p_t[0].title, "");
+    // TODO: Update the multiple title parser to try matching other titles if the first is blank
     assert_eq!(
         p_t[1].title,
         "At the Webster Apartments: One of Manhattan's Last All-Women's Boarding Houses"

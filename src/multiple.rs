@@ -7,7 +7,7 @@ enum TitleSourcePos {
 }
 
 struct TitleSource {
-    name: String,
+    _name: String,
     length: usize,
     position: TitleSourcePos,
 }
@@ -81,8 +81,14 @@ fn titles_locate_matching_source<'a>(titles: &'a Vec<Title<'a>>) -> TitleSource 
             eprintln!("The first titles in the set is empty");
             break 'chars;
         }
-        let mut current_char_left: &char = first_title.get(i).unwrap();
-        let mut current_char_right: &char = first_title.get(first_title.len() - i - 1).unwrap();
+        let mut current_char_left: &char = match first_title.get(i) {
+            Some(v) => v,
+            None => break 'chars,
+        };
+        let mut current_char_right: &char = match first_title.get(first_title.len() - i - 1) {
+            Some(v) => v,
+            None => break 'chars,
+        };
 
         // println!(
         //     "c: {:1} ccl: {:2} ccr: {:3}",
@@ -160,7 +166,7 @@ fn titles_locate_matching_source<'a>(titles: &'a Vec<Title<'a>>) -> TitleSource 
     // println!("Source name if start: {:?}", start_name);
 
     TitleSource {
-        name: source_name,
+        _name: source_name,
         length: source_name_len,
         position: name_position,
     }
