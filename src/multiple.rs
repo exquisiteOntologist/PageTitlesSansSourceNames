@@ -1,3 +1,5 @@
+use std::cmp::{max, min};
+
 use crate::entities::Title;
 
 enum TitleSourcePos {
@@ -27,10 +29,14 @@ pub fn strip_titles_multiple<'a>(titles: Vec<Title<'a>>) -> Vec<Title<'a>> {
 
     let new_titles = titles.into_iter().map(|t| -> Title<'a> {
         let title = t.title;
-        // TODO: Refactor to use character positions instead of .len() ?
+        let slice_pos = if t_s.length < title.len() {
+            title.len() - t_s.length + 1
+        } else {
+            title.len()
+        };
         let pure_title: &str = match t_s.position {
             TitleSourcePos::Null => &title,
-            TitleSourcePos::End => &title[..(title.len() - t_s.length + 1)],
+            TitleSourcePos::End => &title[..slice_pos],
             TitleSourcePos::Start => &title[t_s.length..],
         }
         .trim();
