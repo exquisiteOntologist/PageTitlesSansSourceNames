@@ -45,10 +45,10 @@ pub fn strip_titles_multiple<'a>(titles: Vec<Title<'a>>) -> Vec<Title<'a>> {
                 if title.chars().count() >= t_s.chars_count {
                     title.chars().count() - t_s.chars_count
                 } else {
-                    println!(
-                        "title shorter than source [{:?}] [{:?}]",
-                        title, t_s.source_name
-                    );
+                    // println!(
+                    //     "title shorter than source [{:?}] [{:?}]",
+                    //     title, t_s.source_name
+                    // );
                     return t;
                 }
             }
