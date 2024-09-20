@@ -1,7 +1,8 @@
-use std::cmp::{max, min};
+use gather::slicing::utf8_slice;
 
 use crate::entities::Title;
 
+#[derive(Debug, PartialEq, Eq)]
 enum TitleSourcePos {
     Null,
     End,
@@ -9,8 +10,11 @@ enum TitleSourcePos {
 }
 
 struct TitleSource {
-    _name: String,
-    length: usize,
+    /// The name of the source
+    source_name: String,
+    /// The number of characters in the name of the source
+    chars_count: usize,
+    /// Position of the source name in the title
     position: TitleSourcePos,
 }
 
@@ -28,22 +32,35 @@ pub fn strip_titles_multiple<'a>(titles: Vec<Title<'a>>) -> Vec<Title<'a>> {
     let t_s = titles_locate_matching_source(&titles);
 
     let new_titles = titles.into_iter().map(|t| -> Title<'a> {
+        if t_s.position == TitleSourcePos::Null || t_s.source_name.is_empty() {
+            return t;
+        }
+
         let title = t.title;
-        let slice_pos = if t_s.length < title.len() {
-            title.len() - t_s.length + 1
-        } else {
-            title.len()
+        let title_len = title.chars().count();
+
+        let slice_pos = match t_s.position {
+            TitleSourcePos::Null => 0,
+            TitleSourcePos::End => {
+                if title.chars().count() >= t_s.chars_count {
+                    title.chars().count() - t_s.chars_count
+                } else {
+                    println!(
+                        "title shorter than source [{:?}] [{:?}]",
+                        title, t_s.source_name
+                    );
+                    return t;
+                }
+            }
+            TitleSourcePos::Start => 0,
         };
+
         let pure_title: &str = match t_s.position {
             TitleSourcePos::Null => &title,
-            TitleSourcePos::End => &title[..slice_pos],
-            TitleSourcePos::Start => &title[t_s.length..],
+            TitleSourcePos::End => utf8_slice(&title, 0, slice_pos).unwrap(),
+            TitleSourcePos::Start => utf8_slice(&title, t_s.chars_count, title_len).unwrap(),
         }
         .trim();
-
-        // println!("Stripped");
-        // println!("{}", title);
-        // println!("{}", pure_title);
 
         Title {
             id: t.id,
@@ -159,7 +176,7 @@ fn titles_locate_matching_source<'a>(titles: &'a Vec<Title<'a>>) -> TitleSource 
         TitleSourcePos::Null
     };
 
-    let source_name_len: usize = match name_position {
+    let source_chars_count: usize = match name_position {
         TitleSourcePos::End => matching_ends.len(),
         TitleSourcePos::Start => matching_starts.len(),
         TitleSourcePos::Null => 0,
@@ -171,12 +188,11 @@ fn titles_locate_matching_source<'a>(titles: &'a Vec<Title<'a>>) -> TitleSource 
     };
 
     // println!("Source name: {:?}", source_name);
-    // let start_name: String = matching_starts.into_iter().collect();
     // println!("Source name if start: {:?}", start_name);
 
     TitleSource {
-        _name: source_name,
-        length: source_name_len,
+        source_name,
+        chars_count: source_chars_count,
         position: name_position,
     }
 }
