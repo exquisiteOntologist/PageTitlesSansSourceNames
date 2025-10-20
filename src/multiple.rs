@@ -57,8 +57,10 @@ pub fn strip_titles_multiple<'a>(titles: Vec<Title<'a>>) -> Vec<Title<'a>> {
 
         let pure_title: &str = match t_s.position {
             TitleSourcePos::Null => &title,
-            TitleSourcePos::End => utf8_slice(&title, 0, slice_pos).unwrap(),
-            TitleSourcePos::Start => utf8_slice(&title, t_s.chars_count, title_len).unwrap(),
+            TitleSourcePos::End => utf8_slice(&title, 0, slice_pos).unwrap_or(&title),
+            TitleSourcePos::Start => {
+                utf8_slice(&title, t_s.chars_count, title_len).unwrap_or(&title)
+            }
         }
         .trim();
 
